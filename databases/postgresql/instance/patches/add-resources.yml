@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresql
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    spec:
+      containers:
+      - name: postgresql
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi

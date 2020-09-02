@@ -1,0 +1,58 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+metadata:
+  name: deployment
+packageMetadata:
+  tags:
+  - zagrit/deployment
+  shortDescription: Default deployment
+openAPI:
+  definitions:
+    io.k8s.cli.setters.name:
+      x-k8s-cli:
+        setter:
+          name: name
+          value: app
+          isSet: true
+    io.k8s.cli.substitutions.env:
+      x-k8s-cli:
+        substitution:
+          name: env
+          pattern: ${name}-env
+          values:
+          - marker: ${name}
+            ref: '#/definitions/io.k8s.cli.setters.name'
+    io.k8s.cli.substitutions.image-with-tag:
+      x-k8s-cli:
+        substitution:
+          name: image-with-tag
+          pattern: ${image}:${tag}
+          values:
+          - marker: ${image}
+            ref: '#/definitions/io.k8s.cli.setters.image'
+          - marker: ${tag}
+            ref: '#/definitions/io.k8s.cli.setters.tag'
+    io.k8s.cli.setters.image:
+      x-k8s-cli:
+        setter:
+          name: image
+          value: wito3030/nano
+          isSet: true
+    io.k8s.cli.setters.tag:
+      x-k8s-cli:
+        setter:
+          name: tag
+          value: latest
+          isSet: true
+    io.k8s.cli.setters.cpu:
+      x-k8s-cli:
+        setter:
+          name: cpu
+          value: 40m
+          isSet: true
+    io.k8s.cli.setters.mem:
+      x-k8s-cli:
+        setter:
+          name: mem
+          value: 100Mi
+          isSet: true

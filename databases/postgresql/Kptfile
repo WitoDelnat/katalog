@@ -1,0 +1,66 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+metadata:
+  name: postgresql
+packageMetadata:
+  tags:
+  - zagrit/postgresql
+  shortDescription: Postgresql non-HA instance
+openAPI:
+  definitions:
+    io.k8s.cli.substitutions.user-env:
+      x-k8s-cli:
+        substitution:
+          name: user-env
+          pattern: POSTGRES_USER=${user}
+          values:
+          - marker: ${user}
+            ref: '#/definitions/io.k8s.cli.setters.user'
+    io.k8s.cli.setters.user:
+      x-k8s-cli:
+        setter:
+          name: user
+          value: postgres
+          isSet: true
+    io.k8s.cli.substitutions.password-env:
+      x-k8s-cli:
+        substitution:
+          name: password-env
+          pattern: POSTGRES_PASSWORD=${password}
+          values:
+          - marker: ${password}
+            ref: '#/definitions/io.k8s.cli.setters.password'
+    io.k8s.cli.setters.password:
+      x-k8s-cli:
+        setter:
+          name: password
+          value: didid
+          isSet: true
+    io.k8s.cli.substitutions.database-env:
+      x-k8s-cli:
+        substitution:
+          name: database-env
+          pattern: POSTGRES_DB=${database}
+          values:
+          - marker: ${database}
+            ref: '#/definitions/io.k8s.cli.setters.database'
+    io.k8s.cli.setters.database:
+      x-k8s-cli:
+        setter:
+          name: database
+          value: didid
+          isSet: true
+    io.k8s.cli.substitutions.admin-password-env:
+      x-k8s-cli:
+        substitution:
+          name: admin-password-env
+          pattern: POSTGRES_POSTGRES_PASSWORD=${admin-password}
+          values:
+          - marker: ${admin-password}
+            ref: '#/definitions/io.k8s.cli.setters.admin-password'
+    io.k8s.cli.setters.admin-password:
+      x-k8s-cli:
+        setter:
+          name: admin-password
+          value: didid
+          isSet: true
