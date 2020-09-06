@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app # {"$kpt-set":"name"}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: app # {"$kpt-set":"name"}
+  template:
+    metadata:
+      labels:
+        app: app # {"$kpt-set":"name"}
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: app # {"$kpt-set":"name"}
+          image: wito3030/nano-grpc:latest # {"$kpt-set":"image-with-tag"}
+          ports:
+            - name: grpc
+              containerPort: 50051
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            initialDelaySeconds: 10
+          envFrom:
+            - configMapRef:
+                name: app-env # {"$kpt-set":"env"}
+          resources:
+            requests:
+              cpu: 40m # {"$kpt-set":"cpu"}
+              memory: 100Mi # {"$kpt-set":"mem"}
