@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: my-db # {"$kpt-set":"name"}
+spec:
+  selector:
+    matchLabels:
+      app: my-db # {"$kpt-set":"name"}
+  template:
+    spec:
+      containers:
+      - name: postgresql
+        volumeMounts:
+        - name: my-db-init # {"$kpt-set":"db-init"}
+          mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+      - name: my-db-init # {"$kpt-set":"db-init"}
+        configMap:
+          name: my-db-init # {"$kpt-set":"db-init"}

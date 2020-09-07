@@ -1,13 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
+patchesStrategicMerge:
+- patches/add-init.yml
+- patches/add-resources.yml
 resources:
-  - ../upstream
+- ../upstream
 configMapGenerator:
-  - name: postgresql-env
-    behavior: merge
-    literals:
-      - "POSTGRES_USER=user" # {"$kpt-set":"user-env"}
-      - "POSTGRES_PASSWORD=didid" # {"$kpt-set":"password-env"}
-      - "POSTGRES_DB=didid" # {"$kpt-set":"database-env"}
-      - "POSTGRES_POSTGRES_PASSWORD=didid" # {"$kpt-set":"admin-password-env"}
+- name: my-db-env # {"$kpt-set":"db-env"}
+  behavior: merge
+  literals:
+  - "POSTGRES_PASSWORD=postgres" # {"$kpt-set":"password_env"}
+- name: my-db-init # {"$kpt-set":"db-init"}
+  behavior: merge
+  files:
+  - init.sql=config/init.sql

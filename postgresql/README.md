@@ -1,17 +1,24 @@
-postgresql
-==================================================
+# postgresql
 
 # NAME
 
-  postgresql
+postgresql
 
 # SYNOPSIS
 
-  kubectl apply --recursive -f postgresql
+kubectl apply --recursive -f postgresql
 
 # Description
 
 Postgresql non-HA instance
 
-# SEE ALSO
+# Configuration
 
+```
+kpt cfg list-setters .
+kpt cfg set . $PARAM $VALUE --description $REASON
+```
+
+Afterwards, initialise the database with `instance/config/init.sql_`.
+
+# SEE ALSO

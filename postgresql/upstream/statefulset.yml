@@ -1,79 +1,63 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgresql
+  name: my-db # {"$kpt-set":"name"}
 spec:
-  serviceName: postgresql-headless
+  serviceName: my-db-headless # {"$kpt-set":"headless_service"}
   replicas: 1
   selector:
     matchLabels:
-      app: postgresql
+      app: my-db # {"$kpt-set":"name"}
   template:
     metadata:
-      name: postgresql
+      name: my-db # {"$kpt-set":"name"}
       labels:
-        app: postgresql
+        app: my-db # {"$kpt-set":"name"}
     spec:
       securityContext:
         fsGroup: 1001
       containers:
-      - name: postgresql
-        image: docker.io/bitnami/postgresql:11.9.0-debian-10-r1
-        imagePullPolicy: "IfNotPresent"
+        - name: postgresql
+          image: docker.io/bitnami/postgresql:11.9.0-debian-10-r1
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            runAsUser: 1001
+          envFrom:
+            - configMapRef:
+                name: my-db-env # {"$kpt-set":"db-env"}
+          ports:
+            - name: tcp-postgresql
+              containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U postgres
+            initialDelaySeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U postgres
+            initialDelaySeconds: 15
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+            - name: my-db-data # {"$kpt-set":"db-data"}
+              mountPath: /bitnami/postgresql
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: my-db-data # {"$kpt-set":"db-data"}
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
         resources:
           requests:
-            cpu: 250m
-            memory: 256Mi
-        securityContext:
-          runAsUser: 1001
-        envFrom:
-        - configMapRef:
-            name: postgresql-env
-        ports:
-        - name: tcp-postgresql
-          containerPort: 5432
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - exec pg_isready -U "didid" -d "dbname=didid" -h 127.0.0.1 -p 5432
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - -e
-            - |
-              exec pg_isready -U "didid" -d "dbname=didid" -h 127.0.0.1 -p 5432
-              [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
-        volumeMounts:
-        - name: dshm
-          mountPath: /dev/shm
-        - name: data
-          mountPath: /bitnami/postgresql
-          subPath:
-      volumes:
-      - name: dshm
-        emptyDir:
-          medium: Memory
-          sizeLimit: 1Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-      - "ReadWriteOnce"
-      resources:
-        requests:
-          storage: "8Gi"
+            storage: "5Gi"

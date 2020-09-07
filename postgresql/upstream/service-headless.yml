@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgresql-headless
+  name: my-db-headless # {"$kpt-set":"headless_service"}
 spec:
   type: ClusterIP
   clusterIP: None

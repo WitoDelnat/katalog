@@ -8,59 +8,72 @@ packageMetadata:
   shortDescription: Postgresql non-HA instance
 openAPI:
   definitions:
-    io.k8s.cli.substitutions.user-env:
-      x-k8s-cli:
-        substitution:
-          name: user-env
-          pattern: POSTGRES_USER=${user}
-          values:
-          - marker: ${user}
-            ref: '#/definitions/io.k8s.cli.setters.user'
-    io.k8s.cli.setters.user:
-      x-k8s-cli:
-        setter:
-          name: user
-          value: postgres
-          isSet: true
-    io.k8s.cli.substitutions.password-env:
-      x-k8s-cli:
-        substitution:
-          name: password-env
-          pattern: POSTGRES_PASSWORD=${password}
-          values:
-          - marker: ${password}
-            ref: '#/definitions/io.k8s.cli.setters.password'
     io.k8s.cli.setters.password:
       x-k8s-cli:
         setter:
           name: password
-          value: didid
+          required: true
+          value: postgres
+          description: default
           isSet: true
-    io.k8s.cli.substitutions.database-env:
-      x-k8s-cli:
-        substitution:
-          name: database-env
-          pattern: POSTGRES_DB=${database}
-          values:
-          - marker: ${database}
-            ref: '#/definitions/io.k8s.cli.setters.database'
-    io.k8s.cli.setters.database:
+    io.k8s.cli.setters.name:
       x-k8s-cli:
         setter:
-          name: database
-          value: didid
+          name: name
+          required: true
+          value: my-db
+          description: default
           isSet: true
-    io.k8s.cli.substitutions.admin-password-env:
-      x-k8s-cli:
-        substitution:
-          name: admin-password-env
-          pattern: POSTGRES_POSTGRES_PASSWORD=${admin-password}
-          values:
-          - marker: ${admin-password}
-            ref: '#/definitions/io.k8s.cli.setters.admin-password'
-    io.k8s.cli.setters.admin-password:
+      description: default
+    io.k8s.cli.setters.cpu:
       x-k8s-cli:
         setter:
-          name: admin-password
-          value: didid
-          isSet: true
+          name: cpu
+          value: 250m
+          description: default
+    io.k8s.cli.setters.mem:
+      x-k8s-cli:
+        setter:
+          name: mem
+          value: 256Mi
+          description: default
+    io.k8s.cli.substitutions.password_env:
+      x-k8s-cli:
+        substitution:
+          name: password_env
+          pattern: POSTGRES_PASSWORD=${password}
+          values:
+          - marker: ${password}
+            ref: '#/definitions/io.k8s.cli.setters.password'
+    io.k8s.cli.substitutions.headless_service:
+      x-k8s-cli:
+        substitution:
+          name: headless_service
+          pattern: ${name}-headless
+          values:
+          - marker: ${name}
+            ref: '#/definitions/io.k8s.cli.setters.name'
+    io.k8s.cli.substitutions.db-data:
+      x-k8s-cli:
+        substitution:
+          name: db-data
+          pattern: ${name}-data
+          values:
+          - marker: ${name}
+            ref: '#/definitions/io.k8s.cli.setters.name'
+    io.k8s.cli.substitutions.db-env:
+      x-k8s-cli:
+        substitution:
+          name: db-env
+          pattern: ${name}-env
+          values:
+          - marker: ${name}
+            ref: '#/definitions/io.k8s.cli.setters.name'
+    io.k8s.cli.substitutions.db-init:
+      x-k8s-cli:
+        substitution:
+          name: db-init
+          pattern: ${name}-init
+          values:
+          - marker: ${name}
+            ref: '#/definitions/io.k8s.cli.setters.name'
