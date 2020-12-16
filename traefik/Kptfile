@@ -1,0 +1,32 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+metadata:
+  name: traefik
+packageMetadata:
+  tags:
+  - zagrit/traefik
+  shortDescription: Ingress controller with focus on simplicity
+openAPI:
+  definitions:
+    io.k8s.cli.setters.pilot-token:
+      x-k8s-cli:
+        setter:
+          name: pilot-token
+          value: ""
+          isSet: true
+          setBy: package-default
+          description: Connects the proxy to Traefik Pilot.
+    io.k8s.cli.setters.name:
+      x-k8s-cli:
+        setter:
+          name: name
+          value: traefik-ingress-controller
+          setBy: package-default
+          description: The name of this instance.
+    io.k8s.cli.setters.serviceType:
+      x-k8s-cli:
+        setter:
+          name: serviceType
+          value: LoadBalancer
+          setBy: package-default
+          description: Either `ClusterIP` or `LoadBalancer`

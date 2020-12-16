@@ -1,0 +1,50 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: traefik-ingress-controller # {"$kpt-set":"name"}
+  labels:
+    k8s-app: traefik-ingress-controller # {"$kpt-set":"name"}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      name: traefik-ingress-controller # {"$kpt-set":"name"}
+  template:
+    metadata:
+      labels:
+        name: traefik-ingress-controller # {"$kpt-set":"name"}
+    spec:
+      serviceAccountName: traefik-ingress-controller # {"$kpt-set":"name"}
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: false
+      containers:
+      - image: traefik
+        name: traefik-ingress-controller # {"$kpt-set":"name"}
+        volumeMounts:
+        - name: traefik-config
+          subPath: traefik.yml
+          mountPath: /etc/traefik/traefik.yml
+        ports:
+        - name: http
+          containerPort: 80
+        - name: admin
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+          initialDelaySeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 800m
+            memory: 1Gi
+      volumes:
+      - name: traefik-config
+        configMap:
+          name: traefik-config
+          optional: true

@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: traefik-ingress-controller # {"$kpt-set":"name"}
+spec:
+  type: LoadBalancer # {"$kpt-set":"serviceType"}
+  selector:
+    k8s-app: traefik-ingress-controller # {"$kpt-set":"name"}
+  ports:
+  - protocol: TCP
+    port: 80
+    name: web
+  - protocol: TCP
+    port: 8080
+    name: admin

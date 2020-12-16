@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: traefik
+resources:
+  - upstream/service.yml
+  - upstream/rbac.yml
+  - upstream/deployment.yml
+configMapGenerator:
+  - name: traefik-config
+    files:
+      - traefik.yml=config/traefik.yml
+images:
+  - name: traefik
+    newTag: v2.3.4

@@ -1,0 +1,11 @@
+api:
+  insecure: true
+  dashboard: true
+  debug: true
+ping:
+  entryPoint: "http"
+pilot:
+  token: "" # {"$kpt-set":"pilot-token"}
+providers:
+  kubernetesIngress: {}
+accessLog: {}
