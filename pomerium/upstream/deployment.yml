@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pomerium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pomerium
+  template:
+    metadata:
+      labels:
+        app: pomerium
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: pomerium
+          image: pomerium/pomerium
+          ports:
+            - name: https-web
+              containerPort: 8443
+          env:
+            - name: POMERIUM_DEBUG
+              value: "true"
+          readinessProbe:
+            httpGet:
+              port: https-web
+              path: /ping
+            initialDelaySeconds: 5
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+  revisionHistoryLimit: 2

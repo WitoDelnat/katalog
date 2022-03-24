@@ -5,8 +5,28 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: tcp-postgresql
-    port: 5432
-    targetPort: tcp-postgresql
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
   selector:
     app: postgresql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: ENTER-YOUR-IMAGE
+          ports:
+            - name: http-web
+              containerPort: 8080

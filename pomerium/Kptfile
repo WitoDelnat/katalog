@@ -1,0 +1,16 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+metadata:
+  name: pomerium
+packageMetadata:
+  tags:
+  - zagrit/pomerium
+  shortDescription: Identity-aware proxy in standalone mode
+openAPI:
+  definitions:
+    io.k8s.cli.setters.namespace:
+      x-k8s-cli:
+        setter:
+          name: namespace
+          value: default
+          isSet: true

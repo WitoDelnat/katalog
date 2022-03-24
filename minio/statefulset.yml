@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio # {"$kpt-set":"name"}
+spec:
+  serviceName: minio # {"$kpt-set":"name"}
+  selector:
+    matchLabels:
+      app: minio # {"$kpt-set":"name"}
+  template:
+    metadata:
+      labels:
+        app: minio # {"$kpt-set":"name"}
+    spec:
+      containers:
+      - name: minio
+        volumeMounts:
+        - name: minio-storage
+          mountPath: /data
+        image: minio/minio
+        args:
+        - server
+        - /data
+        envFrom:
+        - secretRef:
+            name: minio-credentials
+        ports:
+        - name: http
+          containerPort: 9000
+        readinessProbe:
+          httpGet:
+            path: /minio/health/ready
+            port: 9000
+          initialDelaySeconds: 120
+          periodSeconds: 20
+        livenessProbe:
+          httpGet:
+            path: /minio/health/live
+            port: 9000
+          initialDelaySeconds: 120
+          periodSeconds: 20
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+  volumeClaimTemplates:
+  - metadata:
+      name: minio-storage
+    spec:
+      accessModes:
+      - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: 10Gi

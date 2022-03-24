@@ -1,0 +1,13 @@
+insecure_server: true
+address: ":8443"
+cookie_secret: WwMtDXWaRDMBQCylle8OJ+w4kLIDIGd8W3cB4/zFFtg=
+authenticate_service_url: https://auth.example.com
+idp_provider: "github"
+idp_client_id: "example-client-id"
+idp_client_secret: "example-client-secret"
+idp_service_account: "example-idp-sa"
+policy:
+  - from: https://foo.example.com
+    to: http://nano.svc.default.local:80
+    allowed_users:
+      - john@example.com

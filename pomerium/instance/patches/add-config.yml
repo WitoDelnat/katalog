@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pomerium
+spec:
+  template:
+    spec:
+      containers:
+      - name: pomerium
+        volumeMounts:
+        - name: pomerium-config
+          readOnly: true
+          mountPath: /pomerium/config.yaml
+          subPath: pomerium.yml
+      volumes:
+      - name: pomerium-config
+        configMap:
+          name: pomerium-config
+          optional: false

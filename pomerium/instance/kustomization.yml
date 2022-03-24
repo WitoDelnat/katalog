@@ -1,0 +1,12 @@
+namespace: default # {"$kpt-set":"namespace"}
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../upstream
+configMapGenerator:
+- name: pomerium-config
+  files:
+  - pomerium.yml=config/pomerium.yml
+patchesStrategicMerge:
+- patches/add-config.yml
+- patches/add-resources.yml

@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - service.yml
+  - statefulset.yml
+secretGenerator:
+  - name: minio-credentials
+    literals:
+      - MINIO_ACCESS_KEY=foo # {"$kpt-set":"access-key-subst"}
+      - MINIO_SECRET_KEY=bar # {"$kpt-set":"secret-key-subst"}
+images:
+  - name: minio/minio
+    newTag: RELEASE.2020-11-19T23-48-16Z

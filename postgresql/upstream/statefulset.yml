@@ -54,7 +54,7 @@ spec:
             sizeLimit: 1Gi
   volumeClaimTemplates:
     - metadata:
-        name: my-db-data # {"$kpt-set":"db-data"}
+        name: database-data
       spec:
         accessModes:
           - "ReadWriteOnce"
